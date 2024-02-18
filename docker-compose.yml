@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  postgres-db:
+      image: postgres
+      ports:
+        - "5432:5432"
+      environment:
+        - POSTGRES_USER=admin
+        - POSTGRES_PASSWORD=root
+        - POSTGRES_DB=main
+        - POSTGRES_HOST=localhost
+      volumes:
+      - ./Docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+      restart: on-failure
+
+  backend-orchestrator:
+    build: ./backend/orchestrator
+    command: go run ./server.go
+    volumes:
+      - ./backend/orchestrator:/code
+    ports:
+      - "8080:8080"
+    restart: on-failure
+  
+  backend-worker:
+    build: ./backend/orchestrator
+    command: go run ./server.go
+    volumes:
+      - ./backend/orchestrator:/code
+    restart: on-failure
+
+  frontend:
+    build: 
+      context: ./frontend
+    ports:
+      - 3000:3000
+    restart: on-failure

@@ -1,0 +1,16 @@
+type Expression {
+    id: ID
+    status: Int
+    text: String
+    data_created: String
+    data_calculated: String
+    result: Float
+}
+
+type Query {
+    Expressions(limit: Int = 25, offset: Int = 0): [Expression]
+}
+
+type Mutation {
+    AddExpression(text: String): Expression
+}
