@@ -1,0 +1,30 @@
+/* .nav-list_items {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.nav_link {
+    margin: 0%;
+}
+
+
+ul {
+    display: flex;
+    list-style-type: disc;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    width: 100%;
+}
+
+a {
+    outline: none;
+    text-decoration: none;
+    color: black;
+} */
+
+/* a:visited {
+    text-decoration: none;
+    color: black;
+} */
