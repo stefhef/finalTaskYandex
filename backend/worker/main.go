@@ -282,7 +282,7 @@ func main() {
 		log.Fatal(err)
 	}
 	for _, expression := range allExpressions {
-		log.Printf("Новое выражение принято в работу: \nID: %d\n Выражение:%s", allExpressions[i].ID, allExpressions[i].Text)
+		log.Printf("Новое выражение принято в работу: \nID: %d\n Выражение:%s", expression.ID, expression.Text)
 		go Calculation(*expression)
 	}
 	wg.Add(1)
