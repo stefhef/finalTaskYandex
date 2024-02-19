@@ -51,7 +51,5 @@ services:
 
 networks:
   db-backend:
-    driver: bridge
   orchestrator-frontend:
-    driver: bridge
     

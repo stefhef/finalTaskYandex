@@ -274,6 +274,7 @@ func GetWork() ([]*Exp, error) {
 }
 
 func main() {
+	log.Println("Воркер запущен")
 	ticker := time.NewTicker(30 * time.Second)
 	var oldExpressions, allExpressions []*Exp
 	allExpressions, err := GetWork()
@@ -281,6 +282,7 @@ func main() {
 		log.Fatal(err)
 	}
 	for _, expression := range allExpressions {
+		log.Printf("Новое выражение принято в работу: \nID: %d\n Выражение:%s", allExpressions[i].ID, allExpressions[i].Text)
 		go Calculation(*expression)
 	}
 	wg.Add(1)
@@ -291,6 +293,7 @@ func main() {
 				oldExpressions = allExpressions
 				allExpressions, err := GetWork()
 				if len(allExpressions) == 0 {
+					log.Println("Нет новых выражений")
 					continue
 				}
 				if err != nil {

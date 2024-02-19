@@ -8,7 +8,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { ChakraProvider, extendTheme, withDefaultColorScheme } from '@chakra-ui/react'
 
 const client = new ApolloClient({
-  uri: 'http://backend_orchestrator:8080/query',
+  uri: 'http://localhost:8080/query',
   cache: new InMemoryCache(),
   fetchOptions: {
     mode: 'no-cors',
