@@ -219,16 +219,20 @@ func eval(e Expression) (float64, error) {
 
 func Calculation(expression Exp) error {
 	parser := NewParser(expression.Text)
-	conn, err := pgx.Connect(context.Background(), "postgres://admin:root@localhost:5432/main")
+	conn, err := pgx.Connect(context.Background(), "postgres://admin:root@postgres_container:5432/main")
 	if err != nil {
+		log.Fatalf("Ошибка при подключении к базе данных,  выражение ID: %d, ошибка: %s", expression.ID, err.Error())
 		return err
 	}
 	result, err := eval(parser.Parse())
 	if err != nil {
 		_, err = conn.Exec(context.Background(), "UPDATE expressions SET status = 400, data_calculated=$2 WHERE id = $1", expression.ID, time.Now().Format("2006-01-02 15:04:05"))
+		log.Fatalf("Ошибка при вычислении выражения ID: %d, ошибка: %s", expression.ID, err.Error())
 		return err
 	}
 	_, err = conn.Exec(context.Background(), "UPDATE expressions SET result = $1, status = 200, data_calculated=$3 WHERE id = $2", result, expression.ID, time.Now().Format("2006-01-02 15:04:05"))
+	log.Printf("Вычисление выражения ID: %d, завершено", expression.ID)
+
 	return err
 }
 
@@ -244,7 +248,7 @@ type Exp struct {
 var N = 10 // количество выражений для расчета
 
 func GetWork() ([]*Exp, error) {
-	conn, err := pgx.Connect(context.Background(), "postgres://admin:root@localhost:5432/main")
+	conn, err := pgx.Connect(context.Background(), "postgres://admin:root@postgres_container:5432/main")
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
@@ -295,6 +299,7 @@ func main() {
 				for i := 0; i < len(allExpressions); i++ {
 					if len(oldExpressions) != 0 {
 						if allExpressions[i] != oldExpressions[i] {
+							log.Printf("Новое выражение принято в работу: \nID: %d\n Выражение:%s", allExpressions[i].ID, allExpressions[i].Text)
 							go Calculation(*allExpressions[i])
 						}
 					}

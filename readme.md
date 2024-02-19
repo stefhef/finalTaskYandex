@@ -21,3 +21,4 @@
 
 ## Как запустить
 Запуск происходит через файл docker-compose
+>docker compose -f "docker-compose.yml" up -d --build

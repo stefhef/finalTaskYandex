@@ -11,7 +11,7 @@ import (
 )
 
 func GetAllExpressions() ([]*model.Expression, error) {
-	conn, err := pgx.Connect(context.Background(), "postgres://admin:root@localhost:5432/main")
+	conn, err := pgx.Connect(context.Background(), "postgres://admin:root@postgres_container:5432/main")
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
@@ -37,7 +37,7 @@ func GetAllExpressions() ([]*model.Expression, error) {
 }
 
 func AddExpression(text string) (*model.Expression, error) {
-	conn, err := pgx.Connect(context.Background(), "postgres://admin:root@localhost:5432/main")
+	conn, err := pgx.Connect(context.Background(), "postgres://admin:root@postgres_container:5432/main")
 	if err != nil {
 		return &model.Expression{}, err
 	}

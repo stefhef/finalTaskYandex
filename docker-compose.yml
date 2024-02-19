@@ -1,8 +1,9 @@
 version: '3.8'
 
 services:
-  postgres-db:
+  postgres-db2:
       image: postgres
+      container_name: postgres_container
       ports:
         - "5432:5432"
       environment:
@@ -13,26 +14,44 @@ services:
       volumes:
       - ./Docker/init.sql:/docker-entrypoint-initdb.d/init.sql
       restart: on-failure
+      networks:
+        - db-backend
 
   backend-orchestrator:
     build: ./backend/orchestrator
+    container_name: backend_orchestrator
     command: go run ./server.go
     volumes:
       - ./backend/orchestrator:/code
     ports:
       - "8080:8080"
     restart: on-failure
+    networks:
+      - orchestrator-frontend
+      - db-backend
   
   backend-worker:
-    build: ./backend/orchestrator
-    command: go run ./server.go
+    build: ./backend/worker
+    command: go run ./main.go
     volumes:
-      - ./backend/orchestrator:/code
+      - ./backend/worker:/code
     restart: on-failure
+    networks:
+      - db-backend
 
   frontend:
-    build: 
-      context: ./frontend
+    build: ./frontend
+    container_name: frontend
+    command: serve -s build
     ports:
       - 3000:3000
     restart: on-failure
+    networks:
+      - orchestrator-frontend
+
+networks:
+  db-backend:
+    driver: bridge
+  orchestrator-frontend:
+    driver: bridge
+    
