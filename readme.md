@@ -22,3 +22,6 @@
 ## Как запустить
 Запуск происходит через файл docker-compose
 >docker compose -f "docker-compose.yml" up -d --build
+При первом запуске может не заработать контейнер worker, после перезапуска он начинает свою работу
+
+тг: https://t.me/StepanMwlnicov
