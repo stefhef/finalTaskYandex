@@ -7,10 +7,19 @@ type Expression {
     result: Float
 }
 
+type User {
+    id: ID
+    username: String
+    password: String
+    access_token: String
+}
+
 type Query {
-    Expressions(limit: Int = 25, offset: Int = 0): [Expression]
+    Expressions(limit: Int = 25, offset: Int = 0,  access_token: String): [Expression]
 }
 
 type Mutation {
-    AddExpression(text: String): Expression
+    GetUser(username: String, password: String): String
+    Register(username: String, password: String): String
+    AddExpression(text: String, access_token: String): Expression
 }

@@ -1,0 +1,7 @@
+export const AuthActionEnum = {
+    SET_AUTH: "SET_AUTH",
+    SET_AUTH_ERROR: "SET_AUTH_ERROR",
+    SET_AUTH_IS_LOADING: "SET_AUTH_IS_LOADING",
+    SET_LOGIN: "SET_LOGIN",
+    SET_AUTH_USER: "SET_AUTH_USER"
+}

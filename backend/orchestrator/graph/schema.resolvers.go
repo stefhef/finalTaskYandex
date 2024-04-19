@@ -6,24 +6,35 @@ package graph
 
 import (
 	"context"
+	"log"
 
 	"githgub.com/stefhef/finalTaskYandex/orchestrator/database"
 	"githgub.com/stefhef/finalTaskYandex/orchestrator/graph/model"
 )
 
+// GetUser is the resolver for the GetUser field.
+func (r *mutationResolver) GetUser(ctx context.Context, username *string, password *string) (*string, error) {
+	log.Println("запрос")
+	access_token, err := database.GetUser(*username, *password)
+	return &access_token, err
+}
+
+// Register is the resolver for the Register field.
+func (r *mutationResolver) Register(ctx context.Context, username *string, password *string) (*string, error) {
+	access_token, err := database.AddUser(*username, *password)
+	return &access_token, err
+}
+
 // AddExpression is the resolver for the AddExpression field.
-func (r *mutationResolver) AddExpression(ctx context.Context, text *string) (*model.Expression, error) {
-	exp, err := database.AddExpression(*text)
+func (r *mutationResolver) AddExpression(ctx context.Context, text *string, accessToken *string) (*model.Expression, error) {
+	exp, err := database.AddExpression(*text, *accessToken)
 	return exp, err
 }
 
 // Expressions is the resolver for the Expressions field.
-func (r *queryResolver) Expressions(ctx context.Context, limit *int, offset *int) ([]*model.Expression, error) {
-	Expressions, err := database.GetAllExpressions()
-	if err != nil {
-		return nil, err
-	}
-	return Expressions, nil
+func (r *queryResolver) Expressions(ctx context.Context, limit *int, offset *int, accessToken *string) ([]*model.Expression, error) {
+	Expressions, err := database.GetAllExpressions(*accessToken)
+	return Expressions, err
 }
 
 // Mutation returns MutationResolver implementation.
@@ -34,3 +45,10 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.

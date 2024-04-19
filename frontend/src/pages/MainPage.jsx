@@ -1,7 +1,13 @@
 import { Input, TableContainer, Th, Tbody, Td, Tr, Table, TableCaption, Thead, Button } from '@chakra-ui/react';
 import { useMutation, useQuery, gql } from '@apollo/client';
+import { BaseSpinner } from '../components/BaseSpinner';
+import { useEffect } from "react";
 
 const MainPage = () => {
+
+    useEffect(() => {
+        document.title = "Главная страница";
+    }, []);
 
     const GET_EXPRESSIONS = gql`
     query{
@@ -28,7 +34,7 @@ const MainPage = () => {
     });
     const [addExpression, { data_mutation, loading_mutation, error_mutation }] = useMutation(ADD_EXPRESSION, {refetchQueries: [
         GET_EXPRESSIONS,
-        'GetExpressions' // Плохая реализация, но как-то со временем тяжко
+        'GetExpressions'
       ],});
 
     if (error || error_mutation) return <p>Error : {error.message}</p>;
@@ -58,7 +64,7 @@ const MainPage = () => {
             }}>Отправить выражение</Button>
             </article>
             
-            {loading ? <p>Loading...</p> : <TableContainer>
+            {loading ? <BaseSpinner /> : <TableContainer>
             {data.Expressions ? 
             <Table variant='simple'>
                 <TableCaption>Все выражения</TableCaption>
