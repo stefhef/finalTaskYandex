@@ -265,7 +265,7 @@ func GetWork() ([]*Exp, error) {
 		var expression Exp
 		err := rows.Scan(&expression.ID, &expression.Text, &expression.Status)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 			return nil, err
 		}
 		expressions = append(expressions, &expression)

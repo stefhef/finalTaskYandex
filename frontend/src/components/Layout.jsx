@@ -1,13 +1,22 @@
+import { useEffect } from 'react'
 import { Link as ReactRouterLink } from 'react-router-dom'
 import { Tabs, TabList, Tab, Button, Heading, Spacer } from '@chakra-ui/react'
 
 
 const Layout = ({children}) => {
-    const isAuth = localStorage.getItem("access_token") != null
+
+    let isAuth = false;
+    useEffect(() => {
+        if (localStorage.getItem("access_token") != null) {
+            isAuth = true;
+        }
+    });
+
+    //  = localStorage.getItem("access_token") != null
 
     const logout = () => {
         localStorage.removeItem("access_token");
-        window.location.reload();
+        // window.location.reload();
     }
 
     return(
@@ -34,9 +43,6 @@ const Layout = ({children}) => {
                                     <Button onClick={logout} as={ReactRouterLink} to={'/'}>
                                         Выйти
                                     </Button>
-                                </Tab>
-                                <Tab as={ReactRouterLink} to={'/profile'}>
-                                    Профиль
                                 </Tab>
                             </>
                             :

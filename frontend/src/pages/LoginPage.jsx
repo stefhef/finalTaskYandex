@@ -33,7 +33,9 @@ const HomePage = () => {
     mutation GetUser($username: String!, $password: String!){
         GetUser(username: $username, password: $password)}`;
     const [sendData, { data, loading, error }] = useMutation(LOGIN, {
+        errorPolicy: 'all',
         onCompleted: (data) => {
+            console.log(data)
             if (data == null) {
                 setValueModal(2)
                 return
@@ -61,13 +63,7 @@ const HomePage = () => {
     });
 
     const login = () => {
-        navigate("/")
-        console.log(valueLogin, valuePassword)
-        try {
-            sendData({variables: {username: valueLogin, password: valuePassword}})
-        } catch (e) {
-            console.log(e)
-        }   
+        sendData({variables: {username: valueLogin, password: valuePassword}})
     }
 
     if (valueModal == 2) {
@@ -92,7 +88,7 @@ const HomePage = () => {
         </Alert>)
     }
     if (error) {
-        return <Text>Error</Text>
+        return <Text>{error.message}</Text>
     }
 
     return (
