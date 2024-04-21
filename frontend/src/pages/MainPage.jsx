@@ -1,7 +1,9 @@
-import { Input, TableContainer, Th, Tbody, Td, Tr, Table, TableCaption, Thead, Button } from '@chakra-ui/react';
-import { useMutation, useQuery, gql } from '@apollo/client';
-import { BaseSpinner } from '../components/BaseSpinner';
 import { useEffect } from "react";
+import { Input, TableContainer, Th, Tbody, Td, Tr, Table, TableCaption, Thead, Button, Text } from '@chakra-ui/react';
+import { useMutation, useQuery, gql } from '@apollo/client';
+
+import { BaseSpinner } from '../components/BaseSpinner';
+
 
 const MainPage = () => {
 
@@ -10,8 +12,8 @@ const MainPage = () => {
     }, []);
 
     const GET_EXPRESSIONS = gql`
-    query{
-        Expressions{
+    query GetAllExpressions($access_token: String!){
+        Expressions(access_token: $access_token){
             id
             text
             status
@@ -21,25 +23,35 @@ const MainPage = () => {
     }}`;
 
     const ADD_EXPRESSION = gql`
-    mutation Add_expression($text: String!){
-        AddExpression(text: $text){
+    mutation Add_expression($text: String!, $access_token: String!){
+        AddExpression(text: $text, access_token: $access_token){
             text
             status
             data_created
             data_calculated
     }}`;
-
+    let access_token = localStorage.getItem("access_token")
     const { loading, error, data } = useQuery(GET_EXPRESSIONS, {
         pollInterval: 15000,
+        variables: { access_token },
     });
     const [addExpression, { data_mutation, loading_mutation, error_mutation }] = useMutation(ADD_EXPRESSION, {refetchQueries: [
         GET_EXPRESSIONS,
         'GetExpressions'
       ],});
 
-    if (error || error_mutation) return <p>Error : {error.message}</p>;
+    if (loading_mutation) return <BaseSpinner />;
+    
+    if (localStorage.getItem("access_token") == null) {
+        return <Text>Требуется авторизация</Text>
+    }
+    
+
     if (data == undefined) return (
         <p>Error. No data or server is off</p>)
+    
+    if (error || error_mutation) return <p>Error : {error.message}</p>;
+    
 
     
     function getColor(status) {
@@ -60,7 +72,7 @@ const MainPage = () => {
             <article>
             <Input w='20%' placeholder='Введите выражение для вычисления' />
             <Button bg='#028a7e' onClick={e => {
-                addExpression({ variables: { text: e.target.previousSibling.value } });
+                addExpression({ variables: { text: e.target.previousSibling.value, access_token: localStorage.getItem("access_token") } });
             }}>Отправить выражение</Button>
             </article>
             

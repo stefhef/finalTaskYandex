@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"errors"
 	"log"
 
 	"githgub.com/stefhef/finalTaskYandex/orchestrator/database"
@@ -14,25 +15,31 @@ import (
 
 // GetUser is the resolver for the GetUser field.
 func (r *mutationResolver) GetUser(ctx context.Context, username *string, password *string) (*string, error) {
-	log.Println("запрос")
+	log.Printf("Запрос на получение токена %s", *username)
 	access_token, err := database.GetUser(*username, *password)
 	return &access_token, err
 }
 
 // Register is the resolver for the Register field.
 func (r *mutationResolver) Register(ctx context.Context, username *string, password *string) (*string, error) {
+	log.Printf("Запрос регистрации: %s %s", *username, *password)
 	access_token, err := database.AddUser(*username, *password)
 	return &access_token, err
 }
 
 // AddExpression is the resolver for the AddExpression field.
 func (r *mutationResolver) AddExpression(ctx context.Context, text *string, accessToken *string) (*model.Expression, error) {
+	log.Printf("Запрос на добавление выражения %s от %s", *text, *accessToken)
 	exp, err := database.AddExpression(*text, *accessToken)
 	return exp, err
 }
 
 // Expressions is the resolver for the Expressions field.
 func (r *queryResolver) Expressions(ctx context.Context, limit *int, offset *int, accessToken *string) ([]*model.Expression, error) {
+	log.Printf("Запрос на получение выражений %s", *accessToken)
+	if len(*accessToken) == 0 {
+		return nil, errors.New("не авторизован")
+	}
 	Expressions, err := database.GetAllExpressions(*accessToken)
 	return Expressions, err
 }
@@ -45,10 +52,3 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//     it when you're done.
-//   - You have helper methods in this file. Move them out to keep these resolver files clean.

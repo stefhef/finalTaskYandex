@@ -1,12 +1,15 @@
-import { Tabs, TabList, Tab, Button, Heading, Spacer } from '@chakra-ui/react'
 import { Link as ReactRouterLink } from 'react-router-dom'
-import {useSelector} from "react-redux";
-import {useActions} from '../hooks/useActions';
+import { Tabs, TabList, Tab, Button, Heading, Spacer } from '@chakra-ui/react'
 
 
 const Layout = ({children}) => {
-    const {logout} = useActions();
-    const {isAuth} = useSelector(state => state.auth);
+    const isAuth = localStorage.getItem("access_token") != null
+
+    const logout = () => {
+        localStorage.removeItem("access_token");
+        window.location.reload();
+    }
+
     return(
     <div className='App'>
       <header w='100%'>
@@ -28,11 +31,9 @@ const Layout = ({children}) => {
                 {isAuth ?
                             <>
                                 <Tab>
-                                    <ReactRouterLink to={'/'}>
-                                        <Button onClick={logout}>
-                                            Выйти
-                                        </Button>
-                                    </ReactRouterLink>
+                                    <Button onClick={logout} as={ReactRouterLink} to={'/'}>
+                                        Выйти
+                                    </Button>
                                 </Tab>
                                 <Tab as={ReactRouterLink} to={'/profile'}>
                                     Профиль
@@ -50,7 +51,6 @@ const Layout = ({children}) => {
                         }
             </TabList>
         </Tabs>
-        
       </header>
       <main style={{padding: "3%"}}>
         {children}

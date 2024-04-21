@@ -16,7 +16,7 @@ func CreateToken(username string, hashedPassword string) string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"name":     username,
 		"password": hashedPassword,
-		"nbf":      now.Add(time.Minute).Unix(),
+		"nbf":      now.Unix(),
 		"exp":      now.Add(5 * time.Minute).Unix(),
 		"iat":      now.Unix(),
 	})
@@ -40,7 +40,7 @@ func DecodeToken(tokenString string) (string, string, error) { // Первое -
 		return []byte(hmacSampleSecret), nil
 	})
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return "", "", err
 	}
 	if claims, ok := tokenFromString.Claims.(jwt.MapClaims); ok {
@@ -48,6 +48,6 @@ func DecodeToken(tokenString string) (string, string, error) { // Первое -
 		password := claims["password"].(string)
 		return username, password, nil
 	}
-	log.Fatal(err)
+	log.Println(err)
 	return "", "", err
 }

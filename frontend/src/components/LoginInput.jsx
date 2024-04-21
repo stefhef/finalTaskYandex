@@ -6,11 +6,7 @@ export const LoginInput = (props) => {
 
     return (
         <Flex style={{margin: '1hv'}}>
-            {/*<Text style={{width: '2000px'}}>*/}
-            {/*    {`Введите ${props.addon ? props.addon : 'логин'}:`}*/}
-            {/*</Text>*/}
             <InputGroup size='md'>
-                {/*<InputLeftAddon children={`Введите ${props.addon ? props.addon : 'логин'}`}/>*/}
                 <InputLeftElement
                     pointerEvents={'none'}
                     children={<Icon as={MdOutlineEmojiPeople} color={'gray.300'}/>}/>

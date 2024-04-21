@@ -1,12 +1,14 @@
 import {useEffect, useState} from "react";
-import {BaseSpinner} from "../components/BaseSpinner";
+import {Link, useNavigate} from "react-router-dom";
 import {Alert, AlertIcon, AlertDescription, AlertTitle, Button, Flex, Spacer, Stack} from "@chakra-ui/react";
+import { useMutation, gql } from '@apollo/client';
+
+import {BaseSpinner} from "../components/BaseSpinner";
 import {PasswordInput} from "../components/PasswordInput";
 import {LoginInput} from "../components/LoginInput";
-import {Link, useNavigate} from "react-router-dom";
 import {EmailInput} from "../components/EmailInput";
 import {decodeLocal} from "../api/Common.js";
-import { useMutation, gql } from '@apollo/client';
+
 
 const HomePage = () => {
 
@@ -25,12 +27,12 @@ const HomePage = () => {
     const navigate = useNavigate();
 
 
-    const [sendData, { dataMutation, loadingMutation, errorMutation }] = useMutation(REGISTER);
+    const [sendData, { data, loading, error }] = useMutation(REGISTER);
     useEffect(() => {
         document.title = "Регистрация";
     }, []);
 
-    const register = async () => {
+    const register = () => {
         if (![valueLogin, valuePassword1, valuePassword2, valueEmail].every(e => Boolean(e))) {
             setValueModal(2);
             setTextError('Не все данные введены');
@@ -45,34 +47,29 @@ const HomePage = () => {
         }
 
         setIsLoading(true)
+        console.log(valueLogin, valuePassword1, valueEmail)
         sendData({variables: {username: valueLogin, password: valuePassword1}})
         
-        
-        // } catch (e) {
-        //     setIsLoading(false)
-        //     setValueModal(2)
-        //     setTextError(`${e} - ошибка при логине`)
-        //     if (e === 406) {
-        //         setTextError('Логин уже используется!')
-        //     } else if (e === 409) {
-        //         setTextError('Почта уже используется!')
-        //     }
-        // }
+    }
+    if (error) {
+        return <p>Ошибка {error.message}</p>
     }
 
-    if (isLoading && !loadingMutation) {
-        if (errorMutation) {
+    if (isLoading && !loading) {
+        if (error) {
             setIsLoading(false)
             setValueModal(2)
-            setTextError(`${errorMutation.message} - ошибка при логине`)
-            if (errorMutation.message === 'Network error: Response not ok') {
+            setTextError(`${error.message} - ошибка при логине`)
+            if (error.message === 'Network error: Response not ok') {
                 setTextError('Сервер не отвечает')
             }
+            return
         } else {
-            localStorage.setItem("access_token", decodeLocal(dataMutation.access_token))
+            localStorage.setItem("access_token", decodeLocal(data.access_token))
             setValueModal(1)
             setIsLoading(false)
             navigate('/')
+            return
         }
     }
 
@@ -122,7 +119,7 @@ const HomePage = () => {
 
     return (
         <div>
-            {isLoading || loadingMutation
+            {isLoading || loading
                 ?
                 <>
                     <BaseSpinner/>

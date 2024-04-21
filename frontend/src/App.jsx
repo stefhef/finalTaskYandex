@@ -1,4 +1,7 @@
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import { ChakraProvider, extendTheme, withDefaultColorScheme } from '@chakra-ui/react'
+
 import Layout from './components/Layout.jsx';
 import MainPage from './pages/MainPage.jsx';
 import ResoursesPage from './pages/ResoursesPage.jsx';
@@ -6,8 +9,6 @@ import SettingsPage from './pages/SettingsPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
-import { ChakraProvider, extendTheme, withDefaultColorScheme } from '@chakra-ui/react'
 
 const client = new ApolloClient({
   uri: 'http://localhost:8080/query',
