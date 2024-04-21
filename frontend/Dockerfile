@@ -1,8 +1,11 @@
-FROM node:20.2-buster-slim as build-stage
-WORKDIR /usr/src/app
-COPY package.json ./
+FROM node:alpine as builder 
+WORKDIR '/app'
+COPY package.json .
+RUN npm install
 COPY . .
-RUN npm install package.json
-RUN npm run build
-RUN npm install -g serve
+RUN npm run build 
+
+FROM nginx
+COPY --from=builder /app/build /usr/share/nginx/html
+
 

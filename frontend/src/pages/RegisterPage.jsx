@@ -27,7 +27,20 @@ const HomePage = () => {
     const navigate = useNavigate();
 
 
-    const [sendData, { data, loading, error }] = useMutation(REGISTER);
+    const [sendData, { data, loading, error }] = useMutation(REGISTER, {
+        errorPolicy: 'all',
+        onCompleted: (data) => {
+            if (data == null) {
+                setValueModal(2)
+                return
+            }
+            console.log(data)
+            localStorage.setItem("access_token", decodeLocal(data.Register))
+            navigate('/')
+            window.location.reload();
+            
+        }
+    });
     useEffect(() => {
         document.title = "Регистрация";
     }, []);
@@ -47,54 +60,11 @@ const HomePage = () => {
         }
 
         setIsLoading(true)
-        console.log(valueLogin, valuePassword1, valueEmail)
         sendData({variables: {username: valueLogin, password: valuePassword1}})
         
     }
-    if (error) {
-        return <p>Ошибка {error.message}</p>
-    }
 
-    if (isLoading && !loading) {
-        if (error) {
-            setIsLoading(false)
-            setValueModal(2)
-            setTextError(`${error.message} - ошибка при логине`)
-            if (error.message === 'Network error: Response not ok') {
-                setTextError('Сервер не отвечает')
-            }
-            return
-        } else {
-            localStorage.setItem("access_token", decodeLocal(data.access_token))
-            setValueModal(1)
-            setIsLoading(false)
-            navigate('/')
-            return
-        }
-    }
-
-
-    if (valueModal === 1) {
-        setTimeout(() => {
-            navigate('/')
-        }, 2000)
-        return (<Alert
-            status='success'
-            variant='subtle'
-            flexDirection='column'
-            alignItems='center'
-            justifyContent='center'
-            textAlign='center'
-            height='200px'>
-            <AlertIcon boxSize='40px' mr={0}/>
-            <AlertTitle mt={4} mb={1} fontSize='lg'>
-                Регистрация выполнена
-            </AlertTitle>
-            <AlertDescription fontSize={'ms'}>
-                Через секунду вы будете перенаправлены на главную страницу
-            </AlertDescription>
-        </Alert>)
-    } else if (valueModal === 2) {
+    if (valueModal === 2) {
         setTimeout(() => {
             setValueModal(0);
             setTextError('')

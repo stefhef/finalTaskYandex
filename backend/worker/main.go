@@ -250,12 +250,12 @@ var N = 10 // количество выражений для расчета
 func GetWork() ([]*Exp, error) {
 	conn, err := pgx.Connect(context.Background(), "postgres://admin:root@postgres_container:5432/main")
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return nil, err
 	}
 	rows, err := conn.Query(context.Background(), fmt.Sprintf("SELECT id, expression, status FROM expressions WHERE status = 300 LIMIT %d", N))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return nil, err
 	}
 	defer rows.Close()

@@ -20,7 +20,6 @@ services:
   backend-orchestrator:
     build: ./backend/orchestrator
     container_name: backend_orchestrator
-    command: go run ./server.go
     volumes:
       - ./backend/orchestrator:/code
     ports:
@@ -32,7 +31,6 @@ services:
   
   backend-worker:
     build: ./backend/worker
-    command: go run ./main.go
     volumes:
       - ./backend/worker:/code
     restart: on-failure
@@ -42,9 +40,8 @@ services:
   frontend:
     build: ./frontend
     container_name: frontend
-    command: serve -s build
     ports:
-      - 3000:3000
+      - 3000:80
     restart: on-failure
     networks:
       - orchestrator-frontend

@@ -1,22 +1,15 @@
-import { useEffect } from 'react'
 import { Link as ReactRouterLink } from 'react-router-dom'
 import { Tabs, TabList, Tab, Button, Heading, Spacer } from '@chakra-ui/react'
 
 
 const Layout = ({children}) => {
 
-    let isAuth = false;
-    useEffect(() => {
-        if (localStorage.getItem("access_token") != null) {
-            isAuth = true;
-        }
-    });
-
-    //  = localStorage.getItem("access_token") != null
+    let isAuth = localStorage.getItem("access_token") != null;
 
     const logout = () => {
         localStorage.removeItem("access_token");
-        // window.location.reload();
+        isAuth = false;
+        window.location.reload();
     }
 
     return(
