@@ -23,6 +23,9 @@
 Запуск происходит через файл docker-compose
 >docker compose -f "docker-compose.yml" up -d --build
 
+Адресс подключения:
+>http://localhost:3000/
+
 При первом запуске может не заработать контейнер worker, после перезапуска он начинает свою работу
 
 тг: https://t.me/StepanMwlnicov
